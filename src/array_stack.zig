@@ -5,17 +5,17 @@ const Allocator = mem.Allocator;
 
 /// ArrayStack (equivalent to FastArrayStack in the book)
 /// Reference: [C Implementation](https://github.com/patmorin/ods/tree/master/c)
-fn ArrayStack(comptime T: type) type {
+pub fn ArrayStack(comptime T: type) type {
     return struct {
         const Self = @This();
         a: []T,
         size: usize,
         allocator: Allocator,
 
-        pub fn init(size: usize, allocator: Allocator) Allocator.Error!Self {
+        pub fn init(allocator: Allocator) Allocator.Error!Self {
             return Self{
-                .a = try allocator.alloc(T, size),
-                .size = size,
+                .a = try allocator.alloc(T, 1),
+                .size = 0,
                 .allocator = allocator,
             };
         }
@@ -43,9 +43,7 @@ fn ArrayStack(comptime T: type) type {
                 try self.resize();
             }
             const x = self.a[i];
-            for (i..self.size) |j| {
-                self.a[j] = self.a[j + 1];
-            }
+            mem.copyForwards(T, self.a[i .. self.size - 1], self.a[i + 1 .. self.size]);
             self.size -= 1;
             return x;
         }
@@ -73,11 +71,11 @@ fn ArrayStack(comptime T: type) type {
 }
 
 test "add and remove" {
-    var stack = ArrayStack(i32).init(3, testing.allocator) catch @panic("panic");
+    var stack = ArrayStack(i32).init(testing.allocator) catch @panic("panic");
     defer stack.deinit();
-    stack.set(0, 1);
-    stack.set(1, 2);
-    stack.set(2, 3);
+    try stack.add(0, 1);
+    try stack.add(1, 2);
+    try stack.add(2, 3);
     try testing.expectEqualSlices(i32, &.{ 1, 2, 3 }, stack.as_slice());
     try stack.add(1, 10);
     try testing.expectEqualSlices(i32, stack.as_slice(), &.{ 1, 10, 2, 3 });
