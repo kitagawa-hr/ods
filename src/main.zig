@@ -6,6 +6,7 @@ pub const array_deque = @import("./array_deque.zig");
 pub const dual_array_deque = @import("./dual_array_deque.zig");
 pub const rootish_array_stack = @import("./rootish_array_stack.zig");
 pub const sllist = @import("./sllist.zig");
+pub const dllist = @import("./dllist.zig");
 
 comptime {
     std.testing.refAllDecls(@This());
