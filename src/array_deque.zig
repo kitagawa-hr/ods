@@ -97,18 +97,14 @@ fn ArrayDeque(comptime T: type) type {
             if (l == r) {
                 return;
             }
-            if (r == self.a.len) {
-                self.a[0] = self.a[self.a.len - 1];
-                mem.copyBackwards(T, self.a[l + 1 ..], self.a[l .. self.a.len - 2]);
-                return;
-            }
             if (l < r) {
                 // | | |l|*|*|*|r| | |
                 mem.copyBackwards(T, self.a[l + 1 .. r + 1], self.a[l..r]);
             } else {
                 // |*|*|r| | | |l|*|*|
                 self.shift_right(0, r);
-                self.shift_right(l, self.a.len);
+                self.a[0] = self.a[self.a.len - 1];
+                self.shift_right(l, self.a.len - 1);
             }
         }
 
