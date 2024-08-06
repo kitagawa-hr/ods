@@ -31,7 +31,7 @@ pub fn DLList(comptime T: type) type {
             };
         }
 
-        pub fn deinit(self: *Self) void {
+        pub fn deinit(self: Self) void {
             var node = self.sentinel.next;
             while (node != self.sentinel) {
                 const target_node = node;
@@ -41,7 +41,7 @@ pub fn DLList(comptime T: type) type {
             self.allocator.destroy(self.sentinel);
         }
 
-        fn getNode(self: *Self, i: usize) *Node {
+        fn getNode(self: Self, i: usize) *Node {
             if (i < self.size / 2) {
                 var node = self.sentinel.next;
                 for (0..i) |_| {
@@ -87,7 +87,7 @@ pub fn DLList(comptime T: type) type {
             _ = try self.addBefore(self.getNode(i), x);
         }
 
-        pub fn get(self: *Self, i: usize) T {
+        pub fn get(self: Self, i: usize) T {
             return self.getNode(i).x;
         }
 

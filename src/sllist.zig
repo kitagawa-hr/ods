@@ -25,7 +25,7 @@ pub fn SLList(comptime T: type) type {
             };
         }
 
-        pub fn deinit(self: *Self) void {
+        pub fn deinit(self: Self) void {
             var node = self.head;
             while (node) |n| {
                 self.allocator.destroy(n);
@@ -72,13 +72,13 @@ pub fn SLList(comptime T: type) type {
             return self.pop();
         }
 
-        fn check_index(self: *Self, i: usize) void {
+        fn check_index(self: Self, i: usize) void {
             if (i < 0 or i >= self.size) {
                 @panic("index out of bounds");
             }
         }
 
-        pub fn get(self: *Self, i: usize) T {
+        pub fn get(self: Self, i: usize) T {
             self.check_index(i);
             var node = self.head;
             for (0..i) |_| {
@@ -99,7 +99,7 @@ pub fn SLList(comptime T: type) type {
             }
         };
 
-        pub fn iterate(self: *Self) Iterator {
+        pub fn iterate(self: Self) Iterator {
             return Iterator{ .current = self.head };
         }
     };

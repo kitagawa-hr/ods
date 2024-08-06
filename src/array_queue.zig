@@ -30,15 +30,15 @@ fn ArrayQueue(comptime T: type) type {
             };
         }
 
-        pub fn deinit(self: *Self) void {
+        pub fn deinit(self: Self) void {
             self.allocator.free(self.a);
         }
 
-        fn head_index(self: *Self) usize {
+        fn head_index(self: Self) usize {
             return (self.tail + self.a.len - self.size) % self.a.len;
         }
 
-        fn tail_index(self: *Self) usize {
+        fn tail_index(self: Self) usize {
             return self.tail % self.a.len;
         }
 

@@ -26,16 +26,16 @@ pub fn DualArrayDeque(comptime T: type) type {
             };
         }
 
-        pub fn deinit(self: *Self) void {
+        pub fn deinit(self: Self) void {
             self.front.deinit();
             self.back.deinit();
         }
 
-        fn size(self: *Self) usize {
+        fn size(self: Self) usize {
             return self.front.size + self.back.size;
         }
 
-        fn get(self: *Self, i: usize) T {
+        fn get(self: Self, i: usize) T {
             if (i < self.front.size) {
                 return self.front.get(self.front.size - i - 1);
             } else {

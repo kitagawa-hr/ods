@@ -20,7 +20,7 @@ pub fn ArrayStack(comptime T: type) type {
             };
         }
 
-        pub fn deinit(self: *Self) void {
+        pub fn deinit(self: Self) void {
             self.allocator.free(self.a);
         }
 
@@ -48,13 +48,13 @@ pub fn ArrayStack(comptime T: type) type {
             return x;
         }
 
-        fn check_index(self: *Self, i: usize) void {
+        fn check_index(self: Self, i: usize) void {
             if (i < 0 or i >= self.size) {
                 @panic("index out of bounds");
             }
         }
 
-        pub fn get(self: *Self, i: usize) T {
+        pub fn get(self: Self, i: usize) T {
             self.check_index(i);
             return self.a[i];
         }
@@ -73,12 +73,62 @@ pub fn ArrayStack(comptime T: type) type {
 test "add and remove" {
     var stack = ArrayStack(i32).init(testing.allocator) catch @panic("panic");
     defer stack.deinit();
-    try stack.add(0, 1);
-    try stack.add(1, 2);
-    try stack.add(2, 3);
-    try testing.expectEqualSlices(i32, &.{ 1, 2, 3 }, stack.as_slice());
-    try stack.add(1, 10);
-    try testing.expectEqualSlices(i32, stack.as_slice(), &.{ 1, 10, 2, 3 });
-    try testing.expectEqual(2, try stack.remove(2));
-    try testing.expectEqualSlices(i32, stack.as_slice(), &.{ 1, 10, 3 });
+    try stack.add(0, 1); // [1]
+    try stack.add(1, 2); // [1, 3]
+    try stack.add(2, 3); // [1, 2, 3]
+    for (0.., [_]i32{ 1, 2, 3 }) |i, expected| {
+        try testing.expectEqual(expected, stack.get(i));
+    }
+    try testing.expectEqual(2, try stack.remove(1)); // [1, 3]
+    try stack.add(2, 4); // [1, 3, 4]
+    try stack.add(2, 5); // [1, 3, 5, 4]
+    try testing.expectEqual(5, try stack.remove(2)); // [1, 3, 4]
+    try stack.add(1, 6); // [1, 6, 3, 4]
+    try stack.add(3, 7); // [1, 6, 3, 7, 4]
+    try stack.add(0, 8); // [8, 1, 6, 3, 7, 4]
+    for (0.., [_]i32{ 8, 1, 6, 3, 7, 4 }) |i, expected| {
+        try testing.expectEqual(expected, stack.get(i));
+    }
+    try testing.expectEqual(3, try stack.remove(3)); // [8, 1, 6, 7, 4]
+    try testing.expectEqual(7, try stack.remove(3)); // [8, 1, 6, 4]
+    try testing.expectEqual(6, try stack.remove(2)); // [8, 1, 4]
+    for (0.., [_]i32{ 8, 1, 4 }) |i, expected| {
+        try testing.expectEqual(expected, stack.get(i));
+    }
+}
+
+test "large data using std.ArrayList" {
+    var std_list = std.ArrayList(usize).init(testing.allocator);
+    var stack = try ArrayStack(usize).init(testing.allocator);
+    defer std_list.deinit();
+    defer stack.deinit();
+    // add last
+    for (0..500) |i| {
+        try std_list.append(i);
+        try stack.add(i, i);
+    }
+    // add first
+    for (0..500) |i| {
+        try std_list.insert(0, i);
+        try stack.add(0, i);
+    }
+    // add random
+    for (0..30) |i| {
+        try std_list.insert(i * i, i * i);
+        try stack.add(i * i, i * i);
+    }
+    // set
+    for (300..800) |i| {
+        std_list.items[i] = i;
+        stack.set(i, i);
+    }
+    // remove random
+    for (0..30) |i| {
+        try testing.expectEqual(std_list.orderedRemove(i * i - i), try stack.remove(i * i - i));
+    }
+    // assert all elements
+    try testing.expectEqual(std_list.items.len, stack.size);
+    for (0..std_list.items.len) |i| {
+        try testing.expectEqual(std_list.items[i], stack.get(i));
+    }
 }

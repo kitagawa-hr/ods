@@ -13,7 +13,7 @@ const Allocator = mem.Allocator;
 ///  add(x) insert x at
 ///  remove() remove element at head
 ///
-fn ArrayDeque(comptime T: type) type {
+pub fn ArrayDeque(comptime T: type) type {
     return struct {
         const Self = @This();
         a: []T,
@@ -30,15 +30,15 @@ fn ArrayDeque(comptime T: type) type {
             };
         }
 
-        pub fn deinit(self: *Self) void {
+        pub fn deinit(self: Self) void {
             self.allocator.free(self.a);
         }
 
-        fn head_index(self: *Self) usize {
+        fn head_index(self: Self) usize {
             return self.head % self.a.len;
         }
 
-        fn tail_index(self: *Self) usize {
+        fn tail_index(self: Self) usize {
             return (self.head + self.size) % self.a.len;
         }
 
@@ -56,13 +56,13 @@ fn ArrayDeque(comptime T: type) type {
             self.head = 0;
         }
 
-        fn check_index(self: *Self, i: usize) void {
+        fn check_index(self: Self, i: usize) void {
             if (i < 0 or i >= self.size) {
                 @panic("index out of bounds");
             }
         }
 
-        pub fn get(self: *Self, i: usize) T {
+        pub fn get(self: Self, i: usize) T {
             self.check_index(i);
             return self.a[(self.head + i) % self.a.len];
         }
