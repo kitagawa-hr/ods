@@ -9,6 +9,7 @@ pub const sllist = @import("./sllist.zig");
 pub const dllist = @import("./dllist.zig");
 pub const selist = @import("./selist.zig");
 pub const skiplist_sset = @import("./skiplist_sset.zig");
+pub const skiplist = @import("./skiplist.zig");
 
 comptime {
     std.testing.refAllDecls(@This());

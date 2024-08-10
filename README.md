@@ -13,4 +13,5 @@ Zig implementations of [Open Data Structures](https://opendatastructures.org/).
     * [DLList](/src/dllist.zig)
     * [SEList](/src/selist.zig)
 * Chapter 4
-    * [SkiplistSSet](/src/skiplistsset.zig)
+    * [SkiplistSSet](/src/skiplist_sset.zig)
+    * [SkiplistList](/src/skiplist.zig)
