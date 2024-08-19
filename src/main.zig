@@ -10,6 +10,9 @@ pub const dllist = @import("./dllist.zig");
 pub const selist = @import("./selist.zig");
 pub const skiplist_sset = @import("./skiplist_sset.zig");
 pub const skiplist = @import("./skiplist.zig");
+pub const hash = @import("./hash.zig");
+pub const chained_hash_table = @import("./chained_hash_table.zig");
+pub const lenear_hash_table = @import("./lenear_hash_table.zig");
 
 comptime {
     std.testing.refAllDecls(@This());

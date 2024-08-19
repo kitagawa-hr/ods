@@ -15,3 +15,6 @@ Zig implementations of [Open Data Structures](https://opendatastructures.org/).
 * Chapter 4
     * [SkiplistSSet](/src/skiplist_sset.zig)
     * [SkiplistList](/src/skiplist.zig)
+* Chapter 5
+    * [ChainedHashTable](/src/chained_hash_table.zig)
+    * [LenearHashTable](/src/lenear_hash_table.zig)
