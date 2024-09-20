@@ -111,6 +111,9 @@ pub fn LenearHashTable(comptime T: type) type {
                             self.table[i] = Elem.deleted;
                             self.size -= 1;
                             self.q -= 1;
+                            if (8 * self.size < self.table.len) {
+                                try self.resize();
+                            }
                             return v;
                         }
                     },
