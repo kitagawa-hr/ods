@@ -13,6 +13,7 @@ pub const skiplist = @import("./skiplist.zig");
 pub const hash = @import("./hash.zig");
 pub const chained_hash_table = @import("./chained_hash_table.zig");
 pub const lenear_hash_table = @import("./lenear_hash_table.zig");
+pub const binary_search_tree = @import("./binary_search_tree.zig");
 
 comptime {
     std.testing.refAllDecls(@This());
