@@ -64,7 +64,6 @@ pub const TabulationHash = struct {
     /// Args:
     ///   x: The value to hash
     ///   d: The number of bits to keep
-    ///   z: odd number
     pub fn hash(self: TabulationHash, x: usize, d: u8) usize {
         var h: usize = 0;
         for (0..c) |i| {
